@@ -27,6 +27,7 @@ public class SemiSplayTree implements SearchTree {
      */
     public SemiSplayTree(Comparable rootKey, int splaySize) {
         this.root = new Node(rootKey);
+        this.root.setWhichChild(0);
         this.size = 1;
         assert(splaySize >= 3);
         this.splaySize = splaySize;
@@ -35,16 +36,17 @@ public class SemiSplayTree implements SearchTree {
     /**
      * Adds a key to the SemiSplayTree. If successful also adds 1 to the size of the SemiSplayTree.
      * @param key, must be an implementation of Java Comparable interface.
-     * @return returns true if the key is added successfully, false otherwise
+     * @return returns true if the key is added successfully, false otherwise.
      */
     @Override
     public boolean add(Comparable key) {
         if (this.root == null) {
             this.root = new Node(key);
+            this.root.setWhichChild(0);
             incrementSize();
             return true;
         }
-        return addRecursively(root, key);
+        return addRecursively(this.root, key);
     }
 
     /**
@@ -64,6 +66,8 @@ public class SemiSplayTree implements SearchTree {
             // If the currentKey has no rightChild, the new key becomes its rightChild
             if (currentNode.getRightChild() == null) {
                 currentNode.setRightChild(new Node(newKey));
+                currentNode.getRightChild().setParent(currentNode);
+                currentNode.getRightChild().setWhichChild(2);
                 incrementSize();
                 return true;
             }
@@ -76,6 +80,8 @@ public class SemiSplayTree implements SearchTree {
             // If the currentKey has no leftChild, the new key becomes its leftChild
             if (currentNode.getLeftChild() == null) {
                 currentNode.setLeftChild(new Node(newKey));
+                currentNode.getLeftChild().setParent(currentNode);
+                currentNode.getLeftChild().setWhichChild(1);
                 incrementSize();
                 return true;
             }
@@ -88,19 +94,19 @@ public class SemiSplayTree implements SearchTree {
     /**
      * Checks if the SemiSplayTree contains a specific key.
      * @param key, the key that gets checked, must be an implementation of Java Comparable interface.
-     * @return returns true if the key is found, false otherwise
+     * @return returns true if the key is found, false otherwise.
      */
     @Override
     public boolean contains(Comparable key) {
-        if (root == null) return false;
-        return containsRecursively(root, key);
+        if (this.root == null) return false;
+        return containsRecursively(this.root, key);
     }
 
     /**
      * Checks if the SemiSplayTree contains a specific key recursively.
      * @param currentNode, the current node to which currently the key gets compared to.
      * @param key, the key that gets checked, must be an implementation of Java Comparable interface.
-     * @return returns true if the key is found, false otherwise
+     * @return returns true if the key is found, false otherwise.
      */
     private boolean containsRecursively(Node currentNode, Comparable key) {
         Comparable currentKeyValue = currentNode.getKey();
@@ -130,10 +136,107 @@ public class SemiSplayTree implements SearchTree {
     /**
      * Removes a node from the SemiSplayTree. If successful also decrements 1 to the size of the SemiSplayTree.
      * @param key, must be an implementation of Java Comparable interface.
-     * @return returns true if the key is found and removed, false otherwise
+     * @return returns true if the key is found and removed, false otherwise.
      */
     @Override
     public boolean remove(Comparable key) {
+        if (this.root == null) return false;
+        return removeRecursively(this.root, key);
+    }
+
+    /**
+     * Removes a node from the SemiSplayTree recursively. If successful also decrements 1 to the size of the SemiSplayTree.
+     * When a the key is found there are 3 cases:
+     * 1: the node is a leaf, than the node can be removed without a problem.
+     * 2: the node has one child, than the node can be removed and the child will take its place.
+     * 3: the node has two children, than the node will be removed and the smallest node of its right subtree will take its place.
+     * @param currentNode, the node to which the key gets compared to.
+     * @param key, the key that will be deleted, must be an implementation of Java Comparable interface.
+     * @return returns true if the key is found and removed, false otherwise.
+     */
+    private boolean removeRecursively(Node currentNode, Comparable key) {
+        // no match was found
+        if (currentNode == null) return false;
+        Comparable currentKey = currentNode.getKey();
+        // currentKey is less than key
+        if (currentKey.compareTo(key) < 0) return removeRecursively(currentNode.getRightChild(), key);
+
+        // currentKey is greater than key
+        if (currentKey.compareTo(key) > 0) return removeRecursively(currentNode.getLeftChild(), key);
+
+        // currentKey is equal to key
+        if (currentKey.compareTo(key) == 0) {
+            // Case 1: no children, just remove the key
+            if (currentNode.getLeftChild() == null && currentNode.getRightChild() == null) {
+                System.out.println("testje"+key);
+                switch (currentNode.getWhichChild()) {
+                    case 0: this.root = null; // currentNode is the root
+                            break;
+                    case 1: currentNode.getParent().setLeftChild(null); // currentNode is the leftChild of its parent
+                            break;
+                    case 2: currentNode.getParent().setRightChild(null); // currentNode is the rightChild of its parent
+                            break;
+                    default: return false;
+                }
+                decrementSize();
+                return true;
+            }
+
+            // Case 2: one child
+            // leftChild not null or rightChild is not null
+            if ((currentNode.getLeftChild() != null && currentNode.getRightChild() == null) || (currentNode.getRightChild() != null && currentNode.getLeftChild() == null)) {
+                Node child;
+                if (currentNode.getLeftChild() != null){
+                    child = currentNode.getLeftChild();
+                } else {
+                    child = currentNode.getRightChild();
+                }
+                switch (currentNode.getWhichChild()) {
+                    case 0: this.root = child; // currentNode is the root
+                            child.setParent(null);
+                            this.root.setWhichChild(0);
+                            break;
+                    case 1: currentNode.getParent().setLeftChild(child); // currentNode is the leftChild of its parent
+                            child.setParent(currentNode.getParent());
+                            child.setWhichChild(1);
+                            break;
+                    case 2: currentNode.getParent().setRightChild(child); // currentNode is the rightChild of its parent
+                            child.setParent(currentNode.getParent());
+                            child.setWhichChild(2);
+                            break;
+                    default: return false;
+                }
+                decrementSize();
+                return true;
+            }
+            // Case 3: multiple children
+            if (currentNode.getLeftChild() != null && currentNode.getRightChild() != null) {
+                // find the smallest node in its right subtree
+                Node smallestNode = currentNode.getRightChild();
+                while(smallestNode.getLeftChild() != null) {
+                    smallestNode = smallestNode.getLeftChild();
+                }
+                // smallestNode is a leaf, so we can just remove its link with its parent without a problem
+                switch (smallestNode.getWhichChild()) {
+                    case 1: smallestNode.getParent().setLeftChild(null);
+                            break;
+                    case 2: smallestNode.getParent().setRightChild(null);
+                            break;
+                    default: return false;
+                }
+                smallestNode.setParent(currentNode.getParent());
+                // now link the smallestNode with its new parent
+                switch (currentNode.getWhichChild()) {
+                    case 1: currentNode.getParent().setLeftChild(smallestNode);
+                            break;
+                    case 2: currentNode.getParent().setRightChild(smallestNode);
+                            break;
+                    default: return false;
+                }
+                decrementSize();
+                return true;
+            }
+        }
         return false;
     }
 
