@@ -2,6 +2,7 @@ package semisplay;
 
 import java.math.BigInteger;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 public class SemiSplayTree implements SearchTree {
 
@@ -57,7 +58,6 @@ public class SemiSplayTree implements SearchTree {
      */
     private boolean addRecursively(Node currentNode, Comparable newKey) {
         Comparable currentKeyValue = currentNode.getKey();
-
         // currentKeyValue and newKey are equal
         if (currentKeyValue == newKey) return false; // The newKey is already in the SemiSplayTree
 
@@ -111,7 +111,7 @@ public class SemiSplayTree implements SearchTree {
     private boolean containsRecursively(Node currentNode, Comparable key) {
         Comparable currentKeyValue = currentNode.getKey();
         // Key is found
-        if (currentKeyValue == key) return true;
+        if (currentKeyValue.equals(key)) return true;
         // currentKeyValue is less than key
         if (currentKeyValue.compareTo(key) < 0) {
             // If the currentKey has no rightChild, no match was found
@@ -270,7 +270,50 @@ public class SemiSplayTree implements SearchTree {
 
     @Override
     public Iterator iterator() {
-        return null;
+        return new SemiSplayTreeIterator(this.root);
+    }
+
+    private class SemiSplayTreeIterator implements Iterator {
+        private Node nextNode;
+
+        public SemiSplayTreeIterator(Node root) {
+            nextNode = root;
+            if (nextNode == null) return;
+
+            while (nextNode.getLeftChild() != null) {
+                nextNode = nextNode.getLeftChild();
+            }
+        }
+
+        @Override
+        public boolean hasNext() {
+            return nextNode != null;
+        }
+
+        @Override
+        public Comparable next() {
+            if (!hasNext()) throw new NoSuchElementException();
+            Node currentNode = nextNode;
+
+            if (nextNode.getRightChild() != null) {
+                nextNode = nextNode.getRightChild();
+                while (nextNode.getLeftChild() != null) {
+                    nextNode = nextNode.getLeftChild();
+                }
+                return currentNode.getKey();
+            }
+            while (true) {
+                if (nextNode.getParent() == null) {
+                    nextNode = null;
+                    return currentNode.getKey();
+                }
+                if (nextNode.getParent().getLeftChild() == nextNode) {
+                    nextNode = nextNode.getParent();
+                    return currentNode.getKey();
+                }
+                nextNode = nextNode.getParent();
+            }
+        }
     }
 
     private void incrementSize() {
