@@ -15,7 +15,7 @@ public class SemiSplayTreeTest {
     @Before
     public final void setUp() {
         bigTestAmount = 100;
-        splaySize = 0;
+        splaySize = 3;
         int root = 0;
         semiSplayTree = new SemiSplayTree(root, splaySize);
     }
