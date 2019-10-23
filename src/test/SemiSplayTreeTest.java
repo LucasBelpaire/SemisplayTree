@@ -4,6 +4,8 @@ import org.junit.Before;
 import org.junit.Test;
 import semisplay.SemiSplayTree;
 
+import java.util.Iterator;
+
 import static org.junit.Assert.*;
 
 public class SemiSplayTreeTest {
@@ -138,5 +140,21 @@ public class SemiSplayTreeTest {
         assertEquals(semiSplayTree.depth(), 3);
         semiSplayTree.add(node4);
         assertEquals(semiSplayTree.depth(), 3);
+    }
+
+    @Test
+    public void iteratorTest() {
+        int node1 = 2, node2 = 3, node3 = 4, node4 = 1;
+        semiSplayTree.add(node1);
+        semiSplayTree.add(node2);
+        semiSplayTree.add(node3);
+        semiSplayTree.add(node4);
+        Iterator it = semiSplayTree.iterator();
+        assertEquals(0, it.next());
+        assertEquals(1, it.next());
+        assertEquals(2, it.next());
+        assertEquals(3, it.next());
+        assertEquals(4, it.next());
+        assertFalse(it.hasNext());
     }
 }
