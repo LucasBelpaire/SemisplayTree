@@ -2,7 +2,6 @@ package test;
 
 import org.junit.Before;
 import org.junit.Test;
-import semisplay.Node;
 import semisplay.SemiSplayTree;
 
 import static org.junit.Assert.*;
@@ -71,6 +70,13 @@ public class SemiSplayTreeTest {
     }
 
     @Test
+    public void testRemoveRoot() {
+        assertTrue(semiSplayTree.contains(0));
+        assertTrue(semiSplayTree.remove(0));
+        assertFalse(semiSplayTree.contains(0));
+    }
+
+    @Test
     public void testRemoveBig() {
         for (int i = 1; i < bigTestAmount; i++) {
             int currNode = i;
@@ -94,26 +100,30 @@ public class SemiSplayTreeTest {
     @Test
     public void sizeTest() {
         int node = 5;
-        assertEquals(semiSplayTree.size(), 0);
+        assertEquals(1, semiSplayTree.size());
         semiSplayTree.add(node);
-        assertEquals(semiSplayTree.size(), 1);
+        assertEquals(2, semiSplayTree.size());
+        assertTrue(semiSplayTree.contains(0));
         semiSplayTree.remove(5);
-        assertEquals(semiSplayTree.size(), 0);
+        assertEquals(1, semiSplayTree.size());
+        assertTrue(semiSplayTree.contains(0));
+        semiSplayTree.remove(0);
+        assertEquals(0, semiSplayTree.size());
     }
 
     @Test
     public void sizeTestBig(){
-        assertEquals(semiSplayTree.size(), 0);
-        for (int i = 0; i < bigTestAmount; i++) {
+        assertEquals(1, semiSplayTree.size());
+        for (int i = 1; i < bigTestAmount; i++) {
             int currNode = i;
             semiSplayTree.add(currNode);
         }
         assertEquals(semiSplayTree.size(), bigTestAmount);
-        for (int i = 0; i < bigTestAmount; i ++) {
+        for (int i = bigTestAmount; i > 0; i --) {
             int currNode = i;
             semiSplayTree.remove(currNode);
         }
-        assertEquals(semiSplayTree.size(), 0);
+        assertEquals(1, semiSplayTree.size());
     }
 
     @Test
