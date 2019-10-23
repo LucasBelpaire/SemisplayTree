@@ -2,6 +2,7 @@ package semisplay;
 
 public class Node {
     private Node parent, leftChild, rightChild;
+    private int whichChild; // 0 = root, 1 = leftChild, 2 = rightChild
     private Comparable key;
 
     public Node(Comparable value){
@@ -14,6 +15,7 @@ public class Node {
 
     public void setLeftChild(Node leftChild) {
         this.leftChild = leftChild;
+        leftChild.setWhichChild(1);
     }
 
     public Node getRightChild() {
@@ -22,25 +24,20 @@ public class Node {
 
     public void setRightChild(Node rightChild) {
         this.rightChild = rightChild;
+        rightChild.setWhichChild(2);
     }
 
     public Node getParent() { return parent; }
 
     public void setParent(Node parent) { this.parent = parent; }
 
-    public Comparable getKey(){
-        return key;
+    public Comparable getKey(){ return key; }
+
+    public int getWhichChild() {
+        return whichChild;
     }
 
-    public boolean removeChild(Node child) {
-        if (this.leftChild.getKey().compareTo(child.getKey()) == 0) {
-            this.leftChild = null;
-            return true;
-        }
-        if (this.rightChild.getKey().compareTo(child.getKey()) == 0) {
-            this.rightChild = null;
-            return true;
-        }
-        return false;
+    public void setWhichChild(int whichChild) {
+        this.whichChild = whichChild;
     }
 }
