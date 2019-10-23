@@ -1,7 +1,7 @@
 package semisplay;
 
 public class Node {
-    private Node leftChild, rightChild;
+    private Node parent, leftChild, rightChild;
     private Comparable key;
 
     public Node(Comparable value){
@@ -23,6 +23,10 @@ public class Node {
     public void setRightChild(Node rightChild) {
         this.rightChild = rightChild;
     }
+
+    public Node getParent() { return parent; }
+
+    public void setParent(Node parent) { this.parent = parent; }
 
     public Comparable getKey(){
         return key;
