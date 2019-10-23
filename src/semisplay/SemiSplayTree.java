@@ -59,22 +59,24 @@ public class SemiSplayTree implements SearchTree {
         // currentKeyValue and newKey are equal
         if (currentKeyValue == newKey) return false; // The newKey is already in the SemiSplayTree
 
-        // currentKeyValue is smaller than newKey
+        // currentKeyValue is less than newKey
         if (currentKeyValue.compareTo(newKey) < 0) {
             // If the currentKey has no rightChild, the new key becomes its rightChild
             if (currentNode.getRightChild() == null) {
                 currentNode.setRightChild(new Node(newKey));
+                incrementSize();
                 return true;
             }
             // if the currentKey has a rightChild, we continue recursively
             return addRecursively(currentNode.getRightChild(), newKey);
         }
 
-        // currentKeyValue is less than newKey
+        // currentKeyValue is greater than newKey
         if (currentKeyValue.compareTo(newKey) > 0) {
             // If the currentKey has no leftChild, the new key becomes its leftChild
             if (currentNode.getLeftChild() == null) {
                 currentNode.setLeftChild(new Node(newKey));
+                incrementSize();
                 return true;
             }
             // if the currentKey has a rightChild, we continue recursively
@@ -91,7 +93,7 @@ public class SemiSplayTree implements SearchTree {
     @Override
     public boolean contains(Comparable key) {
         if (root == null) return false;
-        return false;
+        return containsRecursively(root, key);
     }
 
     /**
@@ -101,6 +103,27 @@ public class SemiSplayTree implements SearchTree {
      * @return returns true if the key is found, false otherwise
      */
     private boolean containsRecursively(Node currentNode, Comparable key) {
+        Comparable currentKeyValue = currentNode.getKey();
+        // Key is found
+        if (currentKeyValue == key) return true;
+        // currentKeyValue is less than key
+        if (currentKeyValue.compareTo(key) < 0) {
+            // If the currentKey has no rightChild, no match was found
+            if (currentNode.getRightChild() == null) {
+                return false;
+            }
+            // if the currentKey has a rightChild, we continue recursively
+            return containsRecursively(currentNode.getRightChild(), key);
+        }
+        // currentKeyValue is greater than key
+        if (currentKeyValue.compareTo(key) > 0) {
+            // If the currentKey has no leftChild, no match was found
+            if (currentNode.getLeftChild() == null) {
+                return false;
+            }
+            // if the currentKey has a rightChild, we continue recursively
+            return containsRecursively(currentNode.getLeftChild(), key);
+        }
         return false;
     }
 
