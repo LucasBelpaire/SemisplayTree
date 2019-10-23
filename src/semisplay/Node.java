@@ -31,4 +31,16 @@ public class Node {
     public Comparable getKey(){
         return key;
     }
+
+    public boolean removeChild(Node child) {
+        if (this.leftChild.getKey().compareTo(child.getKey()) == 0) {
+            this.leftChild = null;
+            return true;
+        }
+        if (this.rightChild.getKey().compareTo(child.getKey()) == 0) {
+            this.rightChild = null;
+            return true;
+        }
+        return false;
+    }
 }
