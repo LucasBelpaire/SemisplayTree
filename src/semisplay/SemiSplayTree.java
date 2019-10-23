@@ -168,7 +168,6 @@ public class SemiSplayTree implements SearchTree {
         if (currentKey.compareTo(key) == 0) {
             // Case 1: no children, just remove the key
             if (currentNode.getLeftChild() == null && currentNode.getRightChild() == null) {
-                System.out.println("testje"+key);
                 switch (currentNode.getWhichChild()) {
                     case 0: this.root = null; // currentNode is the root
                             break;
@@ -240,14 +239,33 @@ public class SemiSplayTree implements SearchTree {
         return false;
     }
 
+    /**
+     * Returns the amount of nodes in the SemiSplayTree
+     * @return amount of nodes, int
+     */
     @Override
     public int size() {
         return size;
     }
 
+    /**
+     * Returns the depth of the SemiSplay, meaning the longest path down.
+     * @return the depth of the SemiSplay, int. Will return -1 if the tree is empty, and 0 if there is only root.
+     */
     @Override
     public int depth() {
-        return 0;
+        return depthRecursively(this.root, -1);
+    }
+
+    private int depthRecursively(Node currentNode, int depth) {
+        // arrived at a nullPointer, meaning the max depth
+        if (currentNode == null) return depth;
+        // check the leftPath and rightPath
+        int leftDepth = depthRecursively(currentNode.getLeftChild(), depth+1);
+        int rightDepth = depthRecursively(currentNode.getRightChild(), depth+1);
+        // return the biggest path
+        if (leftDepth > rightDepth) return leftDepth;
+        return rightDepth;
     }
 
     @Override
