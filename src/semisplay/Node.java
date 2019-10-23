@@ -13,17 +13,13 @@ public class Node {
         return leftChild;
     }
 
-    public void setLeftChild(Node leftChild) {
-        this.leftChild = leftChild;
-    }
+    public void setLeftChild(Node leftChild) { this.leftChild = leftChild; }
 
     public Node getRightChild() {
         return rightChild;
     }
 
-    public void setRightChild(Node rightChild) {
-        this.rightChild = rightChild;
-    }
+    public void setRightChild(Node rightChild) { this.rightChild = rightChild; }
 
     public Node getParent() { return parent; }
 
@@ -31,11 +27,23 @@ public class Node {
 
     public Comparable getKey(){ return key; }
 
-    public int getWhichChild() {
-        return whichChild;
-    }
+    /**
+     * whichChild is an int value which indicates the state of the node in relation to its parent.
+     * The value is either 0, 1, 2.
+     * 0: the node is the root.
+     * 1: the node is the leftChild of its parent.
+     * 2: the node is the rightChild of its parent.
+     * @return int value.
+     */
+    public int getWhichChild() { return whichChild; }
 
-    public void setWhichChild(int whichChild) {
-        this.whichChild = whichChild;
-    }
+    /**
+     * whichChild is an int value which indicates the state of the node in relation to its parent.
+     * The value is either 0, 1, 2.
+     * 0: the node is the root.
+     * 1: the node is the leftChild of its parent.
+     * 2: the node is the rightChild of its parent.
+     * @param whichChild, sets the state of the node. Value should be 0,1,2.
+     */
+    public void setWhichChild(int whichChild) { this.whichChild = whichChild; }
 }
