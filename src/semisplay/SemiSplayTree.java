@@ -3,6 +3,7 @@ package semisplay;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+// public class SemiSplayTree<E extends Comparable<? super E>> implements SearchTree<E>
 public class SemiSplayTree<E extends Comparable<E>> implements SearchTree<E> {
 
     private Node root;
