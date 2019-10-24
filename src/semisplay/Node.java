@@ -29,11 +29,11 @@ public class Node {
 
     /**
      * whichChild is an int value which indicates the state of the node in relation to its parent.
-     * The value is either 0, 1, 2.
+     * The value is either 0, 1, 2
      * 0: the node is the root.
-     * 1: the node is the leftChild of its parent.
-     * 2: the node is the rightChild of its parent.
-     * @return int value.
+     * 1: the node is the leftChild of its parent
+     * 2: the node is the rightChild of its parent
+     * @return int value, between 0 and 3.
      */
     public int getWhichChild() { return whichChild; }
 
