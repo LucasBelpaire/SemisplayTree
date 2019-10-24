@@ -1,10 +1,9 @@
 package semisplay;
 
-import java.math.BigInteger;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public class SemiSplayTree implements SearchTree {
+public class SemiSplayTree<E extends Comparable<E>> implements SearchTree<E> {
 
     private Node root;
     private int size;
@@ -26,7 +25,7 @@ public class SemiSplayTree implements SearchTree {
      * @param rootKey, the key that will be become the root of the SemiSplayTree, must be an implementation of Java Comparable interface.
      * @param splaySize, the amount of nodes used in one splay step, must be larger or equal to 3.
      */
-    public SemiSplayTree(Comparable rootKey, int splaySize) {
+    public SemiSplayTree(E rootKey, int splaySize) {
         this.root = new Node(rootKey);
         this.root.setWhichChild(0);
         this.size = 1;
@@ -40,7 +39,7 @@ public class SemiSplayTree implements SearchTree {
      * @return returns true if the key is added successfully, false otherwise.
      */
     @Override
-    public boolean add(Comparable key) {
+    public boolean add(E key) {
         if (this.root == null) {
             this.root = new Node(key);
             this.root.setWhichChild(0);
@@ -56,7 +55,7 @@ public class SemiSplayTree implements SearchTree {
      * @param newKey, the key that will be added, must be an implementation of Java Comparable interface.
      * @return returns true if the key is added successfully, false otherwise.
      */
-    private boolean addRecursively(Node currentNode, Comparable newKey) {
+    private boolean addRecursively(Node currentNode, E newKey) {
         Comparable currentKeyValue = currentNode.getKey();
         // currentKeyValue and newKey are equal
         if (currentKeyValue == newKey) return false; // The newKey is already in the SemiSplayTree
@@ -97,7 +96,7 @@ public class SemiSplayTree implements SearchTree {
      * @return returns true if the key is found, false otherwise.
      */
     @Override
-    public boolean contains(Comparable key) {
+    public boolean contains(E key) {
         if (this.root == null) return false;
         return containsRecursively(this.root, key);
     }
@@ -108,7 +107,7 @@ public class SemiSplayTree implements SearchTree {
      * @param key, the key that gets checked, must be an implementation of Java Comparable interface.
      * @return returns true if the key is found, false otherwise.
      */
-    private boolean containsRecursively(Node currentNode, Comparable key) {
+    private boolean containsRecursively(Node currentNode, E key) {
         Comparable currentKeyValue = currentNode.getKey();
         // Key is found
         if (currentKeyValue.equals(key)) return true;
@@ -139,7 +138,7 @@ public class SemiSplayTree implements SearchTree {
      * @return returns true if the key is found and removed, false otherwise.
      */
     @Override
-    public boolean remove(Comparable key) {
+    public boolean remove(E key) {
         if (this.root == null) return false;
         return removeRecursively(this.root, key);
     }
@@ -154,7 +153,7 @@ public class SemiSplayTree implements SearchTree {
      * @param key, the key that will be deleted, must be an implementation of Java Comparable interface.
      * @return returns true if the key is found and removed, false otherwise.
      */
-    private boolean removeRecursively(Node currentNode, Comparable key) {
+    private boolean removeRecursively(Node currentNode, E key) {
         // no match was found
         if (currentNode == null) return false;
         Comparable currentKey = currentNode.getKey();
