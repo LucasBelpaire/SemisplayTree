@@ -15,7 +15,7 @@ public class SemiSplayTreeTest {
 
     @Before
     public final void setUp() {
-        bigTestAmount = 7000;
+        bigTestAmount = 500;
         splaySize = 3;
         int root = 0;
         semiSplayTree = new SemiSplayTree(root, splaySize);
@@ -59,6 +59,13 @@ public class SemiSplayTreeTest {
     }
 
     @Test
+    public void containsFalseTest(){
+        assertTrue(semiSplayTree.add(3));
+        assertTrue(semiSplayTree.contains(3));
+        assertFalse(semiSplayTree.contains(4));
+    }
+
+    @Test
     public void testRemove() {
         int node = 5;
         semiSplayTree.add(node);
@@ -74,6 +81,96 @@ public class SemiSplayTreeTest {
         assertTrue(semiSplayTree.remove(0));
         assertFalse(semiSplayTree.contains(0));
     }
+
+    @Test
+    public void removeLeftChildLeaveTest() {
+        assertTrue(semiSplayTree.add(-1));
+        assertTrue(semiSplayTree.contains(-1));
+        assertTrue(semiSplayTree.remove(-1));
+        assertFalse(semiSplayTree.contains(-1));
+    }
+
+    @Test
+    public void removeOneChildLeft() {
+        assertTrue(semiSplayTree.add(-1));
+        assertTrue(semiSplayTree.add(-2));
+        assertTrue(semiSplayTree.contains(-1));
+        assertTrue(semiSplayTree.contains(-2));
+        assertTrue(semiSplayTree.remove(-1));
+        assertFalse(semiSplayTree.contains(-1));
+    }
+
+    @Test
+    public void removeOneChildLeftRoot() {
+        assertTrue(semiSplayTree.add(-1));
+        assertTrue(semiSplayTree.contains(-1));
+        assertTrue(semiSplayTree.remove(0));
+        assertFalse(semiSplayTree.contains(0));
+    }
+
+    @Test
+    public void removeRootMultipleChildren(){
+        assertTrue(semiSplayTree.add(1));
+        assertTrue(semiSplayTree.add(-1));
+        assertTrue(semiSplayTree.contains(1));
+        assertTrue(semiSplayTree.contains(-1));
+        assertTrue(semiSplayTree.remove(0));
+        assertFalse(semiSplayTree.contains(0));
+        assertTrue(semiSplayTree.contains(1));
+        assertTrue(semiSplayTree.contains(-1));
+    }
+
+    @Test
+    public void removeMultipleChildren(){
+        assertTrue(semiSplayTree.add(3));
+        assertTrue(semiSplayTree.add(1));
+        assertTrue(semiSplayTree.add(4));
+        assertTrue(semiSplayTree.contains(3));
+        assertTrue(semiSplayTree.contains(1));
+        assertTrue(semiSplayTree.contains(4));
+        assertTrue(semiSplayTree.remove(3));
+        assertFalse(semiSplayTree.contains(3));
+        assertTrue(semiSplayTree.contains(1));
+        assertTrue(semiSplayTree.contains(4));
+        assertTrue(semiSplayTree.contains(0));
+    }
+
+    @Test
+    public void removeMultipleChildren2() {
+        assertTrue(semiSplayTree.add(-2));
+        assertTrue(semiSplayTree.add(-3));
+        assertTrue(semiSplayTree.add(-1));
+        assertTrue(semiSplayTree.contains(-2));
+        assertTrue(semiSplayTree.contains(-3));
+        assertTrue(semiSplayTree.contains(-1));
+        assertTrue(semiSplayTree.remove(-2));
+        assertFalse(semiSplayTree.contains(-2));
+        assertTrue(semiSplayTree.contains(-1));
+        assertTrue(semiSplayTree.contains(-3));
+        assertTrue(semiSplayTree.contains(0));
+    }
+
+    @Test
+    public void removeMultipleChildren3() {
+        assertTrue(semiSplayTree.add(-4));
+        assertTrue(semiSplayTree.add(-5));
+        assertTrue(semiSplayTree.add(-2));
+        assertTrue(semiSplayTree.add(-3));
+        assertTrue(semiSplayTree.add(-1));
+        assertTrue(semiSplayTree.contains(-1));
+        assertTrue(semiSplayTree.contains(-2));
+        assertTrue(semiSplayTree.contains(-3));
+        assertTrue(semiSplayTree.contains(-4));
+        assertTrue(semiSplayTree.contains(-5));
+        assertTrue(semiSplayTree.remove(-4));
+        assertFalse(semiSplayTree.contains(-4));
+        assertTrue(semiSplayTree.contains(0));
+        assertTrue(semiSplayTree.contains(-1));
+        assertTrue(semiSplayTree.contains(-2));
+        assertTrue(semiSplayTree.contains(-3));
+        assertTrue(semiSplayTree.contains(-5));
+    }
+
 
     @Test
     public void testRemoveBig() {
@@ -149,5 +246,21 @@ public class SemiSplayTreeTest {
         assertEquals(3, it.next());
         assertEquals(4, it.next());
         assertFalse(it.hasNext());
+    }
+
+    @Test
+    public void constructorWithoutRootTest() {
+        SemiSplayTree semi = new SemiSplayTree(3);
+        assertFalse(semi.contains(4));
+        assertTrue(semi.add(4));
+        assertTrue(semi.contains(4));
+    }
+
+    @Test
+    public void addOnLeftSideWithMultipleChildren() {
+        assertTrue(semiSplayTree.add(-1));
+        assertTrue(semiSplayTree.contains(-1));
+        assertTrue(semiSplayTree.add(-2));
+        assertTrue(semiSplayTree.contains(-2));
     }
 }
