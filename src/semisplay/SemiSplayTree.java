@@ -85,7 +85,7 @@ public class SemiSplayTree<E extends Comparable<E>> implements SearchTree<E> {
                 incrementSize();
                 return true;
             }
-            // if the currentKey has a rightChild, we continue recursively
+            // if the currentKey has a leftChild, we continue recursively
             return addRecursively(currentNode.getLeftChild(), newKey);
         }
         return false;
@@ -223,12 +223,34 @@ public class SemiSplayTree<E extends Comparable<E>> implements SearchTree<E> {
                             break;
                     default: return false;
                 }
+                // our currentNode can be the root, which is a special case
+                if (this.root == currentNode) {
+                    smallestNode.setParent(null); // our root doesn't have a parent.
+                    smallestNode.setWhichChild(0);
+                    smallestNode.setLeftChild(this.root.getLeftChild());
+                    this.root = smallestNode;
+
+                    // it is possible that our new root was the only rightChild of the original root
+                    // in this case: set rightChild equal to null
+                    if (currentNode.getRightChild() == smallestNode) {
+                        this.root.setRightChild(null);
+                        return true;
+                    }
+                    // else the rightChild of the original root will become the rightChild of the new root.
+                    this.root.setRightChild(currentNode.getRightChild());
+                    return true;
+                }
+
                 smallestNode.setParent(currentNode.getParent());
                 // now link the smallestNode with its new parent
                 switch (currentNode.getWhichChild()) {
                     case 1: currentNode.getParent().setLeftChild(smallestNode);
+                            smallestNode.setLeftChild(currentNode.getLeftChild());
+                            smallestNode.setRightChild(currentNode.getRightChild());
                             break;
                     case 2: currentNode.getParent().setRightChild(smallestNode);
+                            smallestNode.setLeftChild(currentNode.getLeftChild());
+                            smallestNode.setRightChild(currentNode.getRightChild());
                             break;
                     default: return false;
                 }
