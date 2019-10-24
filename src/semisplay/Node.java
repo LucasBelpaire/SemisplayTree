@@ -1,11 +1,11 @@
 package semisplay;
 
-public class Node {
+public class Node<E extends Comparable<E>> {
     private Node parent, leftChild, rightChild;
     private int whichChild; // 0 = root, 1 = leftChild, 2 = rightChild
-    private Comparable key;
+    private E key;
 
-    public Node(Comparable value){
+    public Node(E value){
         this.key = value;
     }
 
@@ -25,7 +25,7 @@ public class Node {
 
     public void setParent(Node parent) { this.parent = parent; }
 
-    public Comparable getKey(){ return key; }
+    public E getKey(){ return key; }
 
     /**
      * whichChild is an int value which indicates the state of the node in relation to its parent.
