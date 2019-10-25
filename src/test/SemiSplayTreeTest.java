@@ -11,11 +11,11 @@ import static org.junit.Assert.*;
 public class SemiSplayTreeTest {
 
     private int bigTestAmount, splaySize;
-    private SemiSplayTree semiSplayTree;
+    private SemiSplayTree<Integer> semiSplayTree;
 
     @Before
     public final void setUp() {
-        bigTestAmount = 500;
+        bigTestAmount = 100000;
         splaySize = 3;
         int root = 0;
         semiSplayTree = new SemiSplayTree(root, splaySize);
@@ -250,7 +250,7 @@ public class SemiSplayTreeTest {
 
     @Test
     public void constructorWithoutRootTest() {
-        SemiSplayTree semi = new SemiSplayTree(3);
+        SemiSplayTree<Integer> semi = new SemiSplayTree(3);
         assertFalse(semi.contains(4));
         assertTrue(semi.add(4));
         assertTrue(semi.contains(4));
