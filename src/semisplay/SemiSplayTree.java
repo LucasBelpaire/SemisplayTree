@@ -47,46 +47,35 @@ public class SemiSplayTree<E extends Comparable<E>> implements SearchTree<E> {
             incrementSize();
             return true;
         }
-        return addRecursively(this.root, key);
-    }
-
-    /**
-     * Adds a key to the SemiSplayTree recursively.
-     * @param currentNode, the current node to which currently the newKey gets compared to.
-     * @param newKey, the key that will be added, must be an implementation of Java Comparable interface.
-     * @return returns true if the key is added successfully, false otherwise.
-     */
-    private boolean addRecursively(Node<E> currentNode, E newKey) {
-        E currentKeyValue = currentNode.getKey();
-        // currentKeyValue and newKey are equal
-        if (currentKeyValue == newKey) return false; // The newKey is already in the SemiSplayTree
-
-        // currentKeyValue is less than newKey
-        if (currentKeyValue.compareTo(newKey) < 0) {
-            // If the currentKey has no rightChild, the new key becomes its rightChild
-            if (currentNode.getRightChild() == null) {
-                currentNode.setRightChild(new Node<>(newKey));
-                currentNode.getRightChild().setParent(currentNode);
-                currentNode.getRightChild().setWhichChild(2);
-                incrementSize();
-                return true;
+        Node<E> currentNode = this.root;
+        while (currentNode != null) {
+            E currentKeyValue = currentNode.getKey();
+            // The key is already in the SemiSplayTree
+            if (currentKeyValue.equals(key)) return false;
+            // currentKeyValue is less than key
+            if (currentKeyValue.compareTo(key) < 0) {
+                // If the currentKey has no rightChild, the new key becomes its leftChild
+                if (currentNode.getRightChild() == null) {
+                    currentNode.setRightChild(new Node<>(key));
+                    currentNode.getRightChild().setParent(currentNode);
+                    currentNode.getRightChild().setWhichChild(2);
+                    incrementSize();
+                    return true;
+                }
+                currentNode = currentNode.getRightChild();
             }
-            // if the currentKey has a rightChild, we continue recursively
-            return addRecursively(currentNode.getRightChild(), newKey);
-        }
-
-        // currentKeyValue is greater than newKey
-        if (currentKeyValue.compareTo(newKey) > 0) {
-            // If the currentKey has no leftChild, the new key becomes its leftChild
-            if (currentNode.getLeftChild() == null) {
-                currentNode.setLeftChild(new Node<>(newKey));
-                currentNode.getLeftChild().setParent(currentNode);
-                currentNode.getLeftChild().setWhichChild(1);
-                incrementSize();
-                return true;
+            // currentKeyValue is greater than newKey
+            if (currentKeyValue.compareTo(key) > 0) {
+                // If the currentKey has no leftChild, the new key becomes its leftChild
+                if (currentNode.getLeftChild() == null) {
+                    currentNode.setLeftChild(new Node<>(key));
+                    currentNode.getLeftChild().setParent(currentNode);
+                    currentNode.getLeftChild().setWhichChild(1);
+                    incrementSize();
+                    return true;
+                }
+                currentNode = currentNode.getLeftChild();
             }
-            // if the currentKey has a leftChild, we continue recursively
-            return addRecursively(currentNode.getLeftChild(), newKey);
         }
         return false;
     }
