@@ -98,37 +98,21 @@ public class SemiSplayTree<E extends Comparable<E>> implements SearchTree<E> {
      */
     @Override
     public boolean contains(E key) {
-        if (this.root == null) return false;
-        return containsRecursively(this.root, key);
-    }
-
-    /**
-     * Checks if the SemiSplayTree contains a specific key recursively.
-     * @param currentNode, the current node to which currently the key gets compared to.
-     * @param key, the key that gets checked, must be an implementation of Java Comparable interface.
-     * @return returns true if the key is found, false otherwise.
-     */
-    private boolean containsRecursively(Node<E> currentNode, E key) {
-        E currentKeyValue = currentNode.getKey();
-        // Key is found
-        if (currentKeyValue.equals(key)) return true;
-        // currentKeyValue is less than key
-        if (currentKeyValue.compareTo(key) < 0) {
-            // If the currentKey has no rightChild, no match was found
-            if (currentNode.getRightChild() == null) {
-                return false;
+        Node<E> currentNode = this.root;
+        while (currentNode != null) {
+            E currentKeyValue = currentNode.getKey();
+            // Key is found
+            if (currentKeyValue.equals(key)) {
+                return true;
             }
-            // if the currentKey has a rightChild, we continue recursively
-            return containsRecursively(currentNode.getRightChild(), key);
-        }
-        // currentKeyValue is greater than key
-        if (currentKeyValue.compareTo(key) > 0) {
-            // If the currentKey has no leftChild, no match was found
-            if (currentNode.getLeftChild() == null) {
-                return false;
+            // currentKeyValue is less than key
+            if (currentKeyValue.compareTo(key) < 0) {
+                currentNode = currentNode.getRightChild();
             }
-            // if the currentKey has a rightChild, we continue recursively
-            return containsRecursively(currentNode.getLeftChild(), key);
+            // currentKeyValue is greater than key
+            if(currentKeyValue.compareTo(key) > 0){
+                currentNode = currentNode.getLeftChild();
+            }
         }
         return false;
     }
