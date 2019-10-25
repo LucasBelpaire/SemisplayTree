@@ -114,122 +114,113 @@ public class SemiSplayTree<E extends Comparable<E>> implements SearchTree<E> {
     @Override
     public boolean remove(E key) {
         if (this.root == null) return false;
-        return removeRecursively(this.root, key);
-    }
-
-    /**
-     * Removes a node from the SemiSplayTree recursively. If successful also decrements 1 to the size of the SemiSplayTree.
-     * When a the key is found there are 3 cases:
-     * 1: the node is a leaf, than the node can be removed without a problem.
-     * 2: the node has one child, than the node can be removed and the child will take its place.
-     * 3: the node has two children, than the node will be removed and the smallest node of its right subtree will take its place.
-     * @param currentNode, the node to which the key gets compared to.
-     * @param key, the key that will be deleted, must be an implementation of Java Comparable interface.
-     * @return returns true if the key is found and removed, false otherwise.
-     */
-    private boolean removeRecursively(Node<E> currentNode, E key) {
-        // no match was found
-        if (currentNode == null) return false;
-        E currentKey = currentNode.getKey();
-        // currentKey is less than key
-        if (currentKey.compareTo(key) < 0) return removeRecursively(currentNode.getRightChild(), key);
-
-        // currentKey is greater than key
-        if (currentKey.compareTo(key) > 0) return removeRecursively(currentNode.getLeftChild(), key);
-
-        // currentKey is equal to key
-        if (currentKey.compareTo(key) == 0) {
-            // Case 1: no children, just remove the key
-            if (currentNode.getLeftChild() == null && currentNode.getRightChild() == null) {
-                switch (currentNode.getWhichChild()) {
-                    case 0: this.root = null; // currentNode is the root
-                            break;
-                    case 1: currentNode.getParent().setLeftChild(null); // currentNode is the leftChild of its parent
-                            break;
-                    case 2: currentNode.getParent().setRightChild(null); // currentNode is the rightChild of its parent
-                            break;
-                    default: return false;
-                }
-                decrementSize();
-                return true;
+        Node<E> currentNode = this.root;
+        while (currentNode != null) {
+            E currentKeyValue = currentNode.getKey();
+            // currentKeyValue is less than key
+            if (currentKeyValue.compareTo(key) < 0) {
+                currentNode = currentNode.getRightChild();
             }
-
-            // Case 2: one child
-            // leftChild not null or rightChild is not null
-            if ((currentNode.getLeftChild() != null && currentNode.getRightChild() == null) || (currentNode.getRightChild() != null && currentNode.getLeftChild() == null)) {
-                Node<E> child;
-                if (currentNode.getLeftChild() != null){
-                    child = currentNode.getLeftChild();
-                } else {
-                    child = currentNode.getRightChild();
-                }
-                switch (currentNode.getWhichChild()) {
-                    case 0: this.root = child; // currentNode is the root
-                            child.setParent(null);
-                            this.root.setWhichChild(0);
-                            break;
-                    case 1: currentNode.getParent().setLeftChild(child); // currentNode is the leftChild of its parent
-                            child.setParent(currentNode.getParent());
-                            child.setWhichChild(1);
-                            break;
-                    case 2: currentNode.getParent().setRightChild(child); // currentNode is the rightChild of its parent
-                            child.setParent(currentNode.getParent());
-                            child.setWhichChild(2);
-                            break;
-                    default: return false;
-                }
-                decrementSize();
-                return true;
+            // currentKeyValue is greater than key
+            if(currentKeyValue.compareTo(key) > 0){
+                currentNode = currentNode.getLeftChild();
             }
-            // Case 3: multiple children
-            if (currentNode.getLeftChild() != null && currentNode.getRightChild() != null) {
-                // find the smallest node in its right subtree
-                Node<E> smallestNode = currentNode.getRightChild();
-                while(smallestNode.getLeftChild() != null) {
-                    smallestNode = smallestNode.getLeftChild();
-                }
-                // smallestNode is a leaf, so we can just remove its link with its parent without a problem
-                switch (smallestNode.getWhichChild()) {
-                    case 1: smallestNode.getParent().setLeftChild(null);
+            // currentKey is equal to key
+            if (currentKeyValue.equals(key)) {
+                // Case 1: no children, just remove the key
+                if (currentNode.getLeftChild() == null && currentNode.getRightChild() == null) {
+                    switch (currentNode.getWhichChild()) {
+                        case 0: this.root = null; // currentNode is the root
                             break;
-                    case 2: smallestNode.getParent().setRightChild(null);
+                        case 1: currentNode.getParent().setLeftChild(null); // currentNode is the leftChild of its parent
                             break;
-                    default: return false;
-                }
-                // our currentNode can be the root, which is a special case
-                if (this.root == currentNode) {
-                    smallestNode.setParent(null); // our root doesn't have a parent.
-                    smallestNode.setWhichChild(0);
-                    smallestNode.setLeftChild(this.root.getLeftChild());
-                    this.root = smallestNode;
-
-                    // it is possible that our new root was the only rightChild of the original root
-                    // in this case: set rightChild equal to null
-                    if (currentNode.getRightChild() == smallestNode) {
-                        this.root.setRightChild(null);
-                        return true;
+                        case 2: currentNode.getParent().setRightChild(null); // currentNode is the rightChild of its parent
+                            break;
+                        default: return false;
                     }
-                    // else the rightChild of the original root will become the rightChild of the new root.
-                    this.root.setRightChild(currentNode.getRightChild());
+                    decrementSize();
                     return true;
                 }
 
-                smallestNode.setParent(currentNode.getParent());
-                // now link the smallestNode with its new parent
-                switch (currentNode.getWhichChild()) {
-                    case 1: currentNode.getParent().setLeftChild(smallestNode);
-                            smallestNode.setLeftChild(currentNode.getLeftChild());
-                            smallestNode.setRightChild(currentNode.getRightChild());
+                // Case 2: one child
+                // leftChild not null or rightChild is not null
+                if ((currentNode.getLeftChild() != null && currentNode.getRightChild() == null) || (currentNode.getRightChild() != null && currentNode.getLeftChild() == null)) {
+                    Node<E> child;
+                    if (currentNode.getLeftChild() != null){
+                        child = currentNode.getLeftChild();
+                    } else {
+                        child = currentNode.getRightChild();
+                    }
+                    switch (currentNode.getWhichChild()) {
+                        case 0: this.root = child; // currentNode is the root
+                            child.setParent(null);
+                            this.root.setWhichChild(0);
                             break;
-                    case 2: currentNode.getParent().setRightChild(smallestNode);
-                            smallestNode.setLeftChild(currentNode.getLeftChild());
-                            smallestNode.setRightChild(currentNode.getRightChild());
+                        case 1: currentNode.getParent().setLeftChild(child); // currentNode is the leftChild of its parent
+                            child.setParent(currentNode.getParent());
+                            child.setWhichChild(1);
                             break;
-                    default: return false;
+                        case 2: currentNode.getParent().setRightChild(child); // currentNode is the rightChild of its parent
+                            child.setParent(currentNode.getParent());
+                            child.setWhichChild(2);
+                            break;
+                        default: return false;
+                    }
+                    decrementSize();
+                    return true;
                 }
-                decrementSize();
-                return true;
+                // Case 3: multiple children
+                if (currentNode.getLeftChild() != null && currentNode.getRightChild() != null) {
+                    // find the smallest node in its right subtree
+                    Node<E> smallestNode = currentNode.getRightChild();
+                    while(smallestNode.getLeftChild() != null) {
+                        smallestNode = smallestNode.getLeftChild();
+                    }
+                    // smallestNode is a leaf, so we can just remove its link with its parent without a problem
+                    switch (smallestNode.getWhichChild()) {
+                        case 1: smallestNode.getParent().setLeftChild(null);
+                            break;
+                        case 2: smallestNode.getParent().setRightChild(null);
+                            break;
+                        default: return false;
+                    }
+                    // our currentNode can be the root, which is a special case
+                    if (this.root == currentNode) {
+                        smallestNode.setParent(null); // our root doesn't have a parent.
+                        smallestNode.setWhichChild(0);
+                        smallestNode.setLeftChild(this.root.getLeftChild());
+                        this.root = smallestNode;
+
+                        // it is possible that our new root was the only rightChild of the original root
+                        // in this case: set rightChild equal to null
+                        if (currentNode.getRightChild() == smallestNode) {
+                            this.root.setRightChild(null);
+                            return true;
+                        }
+                        // else the rightChild of the original root will become the rightChild of the new root.
+                        this.root.setRightChild(currentNode.getRightChild());
+                        return true;
+                    }
+
+                    smallestNode.setParent(currentNode.getParent());
+                    // now link the smallestNode with its new parent
+                    switch (currentNode.getWhichChild()) {
+                        case 1: currentNode.getParent().setLeftChild(smallestNode);
+                            smallestNode.setLeftChild(currentNode.getLeftChild());
+                            smallestNode.setRightChild(currentNode.getRightChild());
+                            break;
+                        case 2: currentNode.getParent().setRightChild(smallestNode);
+                            smallestNode.setLeftChild(currentNode.getLeftChild());
+                            smallestNode.setRightChild(currentNode.getRightChild());
+                            break;
+                        default: return false;
+                    }
+                    decrementSize();
+                    return true;
+                }
             }
+
+
         }
         return false;
     }
