@@ -6,7 +6,7 @@ import java.util.NoSuchElementException;
 // public class SemiSplayTree<E extends Comparable<? super E>> implements SearchTree<E>
 public class SemiSplayTree<E extends Comparable<E>> implements SearchTree<E> {
 
-    private Node root;
+    private Node<E> root;
     private int size;
     private int splaySize;
 
@@ -27,7 +27,7 @@ public class SemiSplayTree<E extends Comparable<E>> implements SearchTree<E> {
      * @param splaySize, the amount of nodes used in one splay step, must be larger or equal to 3.
      */
     public SemiSplayTree(E rootKey, int splaySize) {
-        this.root = new Node(rootKey);
+        this.root = new Node<>(rootKey);
         this.root.setWhichChild(0);
         this.size = 1;
         assert(splaySize >= 3);
@@ -42,7 +42,7 @@ public class SemiSplayTree<E extends Comparable<E>> implements SearchTree<E> {
     @Override
     public boolean add(E key) {
         if (this.root == null) {
-            this.root = new Node(key);
+            this.root = new Node<>(key);
             this.root.setWhichChild(0);
             incrementSize();
             return true;
@@ -56,8 +56,8 @@ public class SemiSplayTree<E extends Comparable<E>> implements SearchTree<E> {
      * @param newKey, the key that will be added, must be an implementation of Java Comparable interface.
      * @return returns true if the key is added successfully, false otherwise.
      */
-    private boolean addRecursively(Node currentNode, E newKey) {
-        Comparable currentKeyValue = currentNode.getKey();
+    private boolean addRecursively(Node<E> currentNode, E newKey) {
+        E currentKeyValue = currentNode.getKey();
         // currentKeyValue and newKey are equal
         if (currentKeyValue == newKey) return false; // The newKey is already in the SemiSplayTree
 
@@ -65,7 +65,7 @@ public class SemiSplayTree<E extends Comparable<E>> implements SearchTree<E> {
         if (currentKeyValue.compareTo(newKey) < 0) {
             // If the currentKey has no rightChild, the new key becomes its rightChild
             if (currentNode.getRightChild() == null) {
-                currentNode.setRightChild(new Node(newKey));
+                currentNode.setRightChild(new Node<>(newKey));
                 currentNode.getRightChild().setParent(currentNode);
                 currentNode.getRightChild().setWhichChild(2);
                 incrementSize();
@@ -79,7 +79,7 @@ public class SemiSplayTree<E extends Comparable<E>> implements SearchTree<E> {
         if (currentKeyValue.compareTo(newKey) > 0) {
             // If the currentKey has no leftChild, the new key becomes its leftChild
             if (currentNode.getLeftChild() == null) {
-                currentNode.setLeftChild(new Node(newKey));
+                currentNode.setLeftChild(new Node<>(newKey));
                 currentNode.getLeftChild().setParent(currentNode);
                 currentNode.getLeftChild().setWhichChild(1);
                 incrementSize();
@@ -108,8 +108,8 @@ public class SemiSplayTree<E extends Comparable<E>> implements SearchTree<E> {
      * @param key, the key that gets checked, must be an implementation of Java Comparable interface.
      * @return returns true if the key is found, false otherwise.
      */
-    private boolean containsRecursively(Node currentNode, E key) {
-        Comparable currentKeyValue = currentNode.getKey();
+    private boolean containsRecursively(Node<E> currentNode, E key) {
+        E currentKeyValue = currentNode.getKey();
         // Key is found
         if (currentKeyValue.equals(key)) return true;
         // currentKeyValue is less than key
@@ -154,10 +154,10 @@ public class SemiSplayTree<E extends Comparable<E>> implements SearchTree<E> {
      * @param key, the key that will be deleted, must be an implementation of Java Comparable interface.
      * @return returns true if the key is found and removed, false otherwise.
      */
-    private boolean removeRecursively(Node currentNode, E key) {
+    private boolean removeRecursively(Node<E> currentNode, E key) {
         // no match was found
         if (currentNode == null) return false;
-        Comparable currentKey = currentNode.getKey();
+        E currentKey = currentNode.getKey();
         // currentKey is less than key
         if (currentKey.compareTo(key) < 0) return removeRecursively(currentNode.getRightChild(), key);
 
@@ -184,7 +184,7 @@ public class SemiSplayTree<E extends Comparable<E>> implements SearchTree<E> {
             // Case 2: one child
             // leftChild not null or rightChild is not null
             if ((currentNode.getLeftChild() != null && currentNode.getRightChild() == null) || (currentNode.getRightChild() != null && currentNode.getLeftChild() == null)) {
-                Node child;
+                Node<E> child;
                 if (currentNode.getLeftChild() != null){
                     child = currentNode.getLeftChild();
                 } else {
@@ -211,7 +211,7 @@ public class SemiSplayTree<E extends Comparable<E>> implements SearchTree<E> {
             // Case 3: multiple children
             if (currentNode.getLeftChild() != null && currentNode.getRightChild() != null) {
                 // find the smallest node in its right subtree
-                Node smallestNode = currentNode.getRightChild();
+                Node<E> smallestNode = currentNode.getRightChild();
                 while(smallestNode.getLeftChild() != null) {
                     smallestNode = smallestNode.getLeftChild();
                 }
@@ -291,14 +291,14 @@ public class SemiSplayTree<E extends Comparable<E>> implements SearchTree<E> {
     }
 
     @Override
-    public Iterator iterator() {
+    public Iterator<E> iterator() {
         return new SemiSplayTreeIterator(this.root);
     }
 
-    private class SemiSplayTreeIterator implements Iterator {
-        private Node nextNode;
+    private class SemiSplayTreeIterator implements Iterator<E> {
+        private Node<E> nextNode;
 
-        public SemiSplayTreeIterator(Node root) {
+        private SemiSplayTreeIterator(Node<E> root) {
             nextNode = root;
             if (nextNode == null) return;
 
@@ -313,9 +313,9 @@ public class SemiSplayTree<E extends Comparable<E>> implements SearchTree<E> {
         }
 
         @Override
-        public Comparable next() {
+        public E next() {
             if (!hasNext()) throw new NoSuchElementException();
-            Node currentNode = nextNode;
+            Node<E> currentNode = nextNode;
 
             if (nextNode.getRightChild() != null) {
                 nextNode = nextNode.getRightChild();
