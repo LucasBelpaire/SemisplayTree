@@ -1,31 +1,31 @@
 package semisplay;
 
-class Node<E extends Comparable<E>> {
+public class Node<E extends Comparable<E>> implements Comparable<Node<E>> {
     private Node<E> parent, leftChild, rightChild;
     private int whichChild; // 0 = root, 1 = leftChild, 2 = rightChild
     private E key;
 
-    Node(E value){
+    public Node(E value){
         this.key = value;
     }
 
-    Node<E> getLeftChild() {
+    public Node<E> getLeftChild() {
         return leftChild;
     }
 
-    void setLeftChild(Node<E> leftChild) { this.leftChild = leftChild; }
+    public void setLeftChild(Node<E> leftChild) { this.leftChild = leftChild; }
 
-    Node<E> getRightChild() {
+    public Node<E> getRightChild() {
         return rightChild;
     }
 
-    void setRightChild(Node<E> rightChild) { this.rightChild = rightChild; }
+    public void setRightChild(Node<E> rightChild) { this.rightChild = rightChild; }
 
-    Node<E> getParent() { return parent; }
+    public Node<E> getParent() { return parent; }
 
-    void setParent(Node<E> parent) { this.parent = parent; }
+    public void setParent(Node<E> parent) { this.parent = parent; }
 
-    E getKey(){ return key; }
+    public E getKey(){ return key; }
 
     /**
      * whichChild is an int value which indicates the state of the node in relation to its parent.
@@ -35,7 +35,7 @@ class Node<E extends Comparable<E>> {
      * 2: the node is the rightChild of its parent
      * @return int value, between 0 and 3.
      */
-    int getWhichChild() { return whichChild; }
+    public int getWhichChild() { return whichChild; }
 
     /**
      * whichChild is an int value which indicates the state of the node in relation to its parent.
@@ -45,5 +45,10 @@ class Node<E extends Comparable<E>> {
      * 2: the node is the rightChild of its parent.
      * @param whichChild, sets the state of the node. Value should be 0,1,2.
      */
-    void setWhichChild(int whichChild) { this.whichChild = whichChild; }
+    public void setWhichChild(int whichChild) { this.whichChild = whichChild; }
+
+    @Override
+    public int compareTo(Node<E> o) {
+        return this.key.compareTo(o.getKey());
+    }
 }
