@@ -5,7 +5,6 @@ import java.util.LinkedList;
 import java.util.NoSuchElementException;
 import java.util.Queue;
 
-// public class SemiSplayTree<E extends Comparable<? super E>> implements SearchTree<E>
 public class SemiSplayTree<E extends Comparable<E>> implements SearchTree<E> {
 
     private Node<E> root;
@@ -97,13 +96,9 @@ public class SemiSplayTree<E extends Comparable<E>> implements SearchTree<E> {
                 return true;
             }
             // currentKeyValue is less than key
-            if (currentKeyValue.compareTo(key) < 0) {
-                currentNode = currentNode.getRightChild();
-            }
+            if (currentKeyValue.compareTo(key) < 0) currentNode = currentNode.getRightChild();
             // currentKeyValue is greater than key
-            if(currentKeyValue.compareTo(key) > 0){
-                currentNode = currentNode.getLeftChild();
-            }
+            if(currentKeyValue.compareTo(key) > 0) currentNode = currentNode.getLeftChild();
         }
         return false;
     }
@@ -120,13 +115,9 @@ public class SemiSplayTree<E extends Comparable<E>> implements SearchTree<E> {
         while (currentNode != null) {
             E currentKeyValue = currentNode.getKey();
             // currentKeyValue is less than key
-            if (currentKeyValue.compareTo(key) < 0) {
-                currentNode = currentNode.getRightChild();
-            }
+            if (currentKeyValue.compareTo(key) < 0) currentNode = currentNode.getRightChild();
             // currentKeyValue is greater than key
-            if(currentKeyValue.compareTo(key) > 0){
-                currentNode = currentNode.getLeftChild();
-            }
+            if(currentKeyValue.compareTo(key) > 0)  currentNode = currentNode.getLeftChild();
             // currentKey is equal to key
             if (currentKeyValue.equals(key)) {
                 // Case 1: no children, just remove the key
@@ -268,17 +259,6 @@ public class SemiSplayTree<E extends Comparable<E>> implements SearchTree<E> {
             nodeCount = nodes.size();
         }
         return depth;
-    }
-
-    private int depthRecursively(Node currentNode, int depth) {
-        // arrived at a nullPointer, meaning the max depth
-        if (currentNode == null) return depth;
-        // check the leftPath and rightPath
-        int leftDepth = depthRecursively(currentNode.getLeftChild(), depth+1);
-        int rightDepth = depthRecursively(currentNode.getRightChild(), depth+1);
-        // return the biggest path
-        if (leftDepth > rightDepth) return leftDepth;
-        return rightDepth;
     }
 
     @Override
