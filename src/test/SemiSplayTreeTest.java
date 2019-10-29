@@ -232,6 +232,15 @@ public class SemiSplayTreeTest {
     }
 
     @Test
+    public void depthTestBig(){
+        assertEquals(semiSplayTree.depth(), 0);
+        for (int i  = 0; i < bigTestAmount; i++) {
+            semiSplayTree.add(i);
+        }
+        assertEquals(bigTestAmount-1, semiSplayTree.depth());
+    }
+
+    @Test
     public void iteratorTest() {
         int node1 = 2, node2 = 3, node3 = 4, node4 = 1;
         semiSplayTree.add(node1);
