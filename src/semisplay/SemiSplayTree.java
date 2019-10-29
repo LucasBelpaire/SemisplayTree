@@ -1,7 +1,9 @@
 package semisplay;
 
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.NoSuchElementException;
+import java.util.Queue;
 
 // public class SemiSplayTree<E extends Comparable<? super E>> implements SearchTree<E>
 public class SemiSplayTree<E extends Comparable<E>> implements SearchTree<E> {
@@ -236,11 +238,36 @@ public class SemiSplayTree<E extends Comparable<E>> implements SearchTree<E> {
 
     /**
      * Returns the depth of the SemiSplay, meaning the longest path down.
+     * Based on: https://www.geeksforgeeks.org/iterative-method-to-find-height-of-binary-tree/
      * @return the depth of the SemiSplay, int. Will return -1 if the tree is empty, and 0 if there is only root.
      */
     @Override
     public int depth() {
-        return depthRecursively(this.root, -1);
+        // return depthRecursively(this.root, -1);
+
+        if (this.root == null) return -1;
+
+        Queue<Node<E>> nodes = new LinkedList<>();
+        nodes.add(this.root);
+        int depth = -1;
+        int nodeCount = nodes.size();
+        while (nodeCount != 0) {
+            depth++;
+
+            while(nodeCount > 0) {
+                Node<E> newNode = nodes.peek();
+                nodes.remove();
+                if (newNode.getLeftChild() != null) {
+                    nodes.add(newNode.getLeftChild());
+                }
+                if (newNode.getRightChild() != null) {
+                    nodes.add(newNode.getRightChild());
+                }
+                nodeCount--;
+            }
+            nodeCount = nodes.size();
+        }
+        return depth;
     }
 
     private int depthRecursively(Node currentNode, int depth) {
