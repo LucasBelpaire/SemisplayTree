@@ -1,9 +1,6 @@
 package semisplay;
 
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.NoSuchElementException;
-import java.util.Queue;
+import java.util.*;
 
 public class SemiSplayTree<E extends Comparable<E>> implements SearchTree<E> {
 
@@ -61,6 +58,7 @@ public class SemiSplayTree<E extends Comparable<E>> implements SearchTree<E> {
                     currentNode.getRightChild().setParent(currentNode);
                     currentNode.getRightChild().setWhichChild(2);
                     incrementSize();
+                    splay(currentNode.getRightChild());
                     return true;
                 }
                 currentNode = currentNode.getRightChild();
@@ -73,6 +71,7 @@ public class SemiSplayTree<E extends Comparable<E>> implements SearchTree<E> {
                     currentNode.getLeftChild().setParent(currentNode);
                     currentNode.getLeftChild().setWhichChild(1);
                     incrementSize();
+                    splay(currentNode.getLeftChild());
                     return true;
                 }
                 currentNode = currentNode.getLeftChild();
@@ -194,7 +193,6 @@ public class SemiSplayTree<E extends Comparable<E>> implements SearchTree<E> {
                         this.root.setRightChild(currentNode.getRightChild());
                         return true;
                     }
-
                     smallestNode.setParent(currentNode.getParent());
                     // now link the smallestNode with its new parent
                     switch (currentNode.getWhichChild()) {
@@ -212,8 +210,6 @@ public class SemiSplayTree<E extends Comparable<E>> implements SearchTree<E> {
                     return true;
                 }
             }
-
-
         }
         return false;
     }
@@ -315,5 +311,121 @@ public class SemiSplayTree<E extends Comparable<E>> implements SearchTree<E> {
 
     private void decrementSize() {
         size--;
+    }
+
+    /**
+     * Helper method used for testing
+     * @return returns the root of the SemiSplaytree
+     */
+    public Node<E> getRoot() {
+        return this.root;
+    }
+
+    /**
+     * This functions implements the splay operations.
+     * First it calculates the splay path, after which it will perform the splay operation on every n consecutive nodes.
+     * Where n equals the "splaygrootte"
+     * @param node, the node from where the splay path begins
+     */
+    private void splay(Node<E> node) {
+        // Load the splaypath into a queue, so we can easily go over the nodes in the right order later
+        Queue<Node<E>> path = new LinkedList<>();
+        Node<E> currNode = node;
+        path.add(currNode);
+        while(currNode.getParent() != null) {
+            path.add(currNode.getParent());
+            currNode = currNode.getParent();
+        }
+
+        // Now we go over the path and splay every n consecutive nodes
+        // The function will keep looping until there are less than n nodes left in the path
+        while (path.size() >= this.splaySize ) {
+            List<Node<E>> listOfNodesOnPath = new ArrayList<>();
+            List<Node<E>> listOfSubTreesOfPath = new ArrayList<>(); // will be double as long as listOfNodesOnPath
+
+            // Get n nodes, for the current splay operation
+            for (int i = 0; i < splaySize; i++) {
+                listOfNodesOnPath.add(path.peek());
+                path.remove();
+            }
+            // Get the last node of the path, its parent will become the parent of the new root of the subtree
+            // if its parent is null, the new root of the subtree will become the root of the SemiSplaytree
+            Node<E> parent = listOfNodesOnPath.get(this.splaySize-1).getParent();
+            // sort the nodes in the right order, from smallest to largest
+            Collections.sort(listOfNodesOnPath);
+            // Get the subtrees in the right order
+            for (Node nodeOnPath : listOfNodesOnPath) {
+                if (!listOfNodesOnPath.contains(nodeOnPath.getLeftChild())) listOfSubTreesOfPath.add(nodeOnPath.getLeftChild());
+                if (!listOfNodesOnPath.contains(nodeOnPath.getRightChild())) listOfSubTreesOfPath.add(nodeOnPath.getRightChild());
+            }
+            // This node will be the root of our subtree
+            int middleNodeIndex = listOfNodesOnPath.size() / 2;
+            Node<E> rootOfSubTree = listOfNodesOnPath.get(middleNodeIndex);
+            // change its parent to the parent of the old root of the path
+            // but if the parent is null, this means that rootOfSubtree will become the new root of the SemiSplay
+            if (parent == null) {
+                rootOfSubTree.setParent(null);
+                rootOfSubTree.setWhichChild(0);
+                this.root = rootOfSubTree;
+            }
+            if (parent != null) {
+                rootOfSubTree.setParent(parent);
+                if (rootOfSubTree.compareTo(parent) < 0) {
+                    parent.setLeftChild(rootOfSubTree);
+                    rootOfSubTree.setWhichChild(1);
+                }
+                if (rootOfSubTree.compareTo(parent) > 0) {
+                    parent.setRightChild(rootOfSubTree);
+                    rootOfSubTree.setWhichChild(2);
+                }
+            }
+            // now recursively fill the subtree, with rootOfSubTree as its root
+            List<Node<E>> leftPath = listOfNodesOnPath.subList(0, middleNodeIndex);
+            List<Node<E>> rightPath = listOfNodesOnPath.subList(middleNodeIndex+1, listOfNodesOnPath.size());
+            rootOfSubTree.setLeftChild(buildSubTreeRecursively(rootOfSubTree, leftPath));
+            rootOfSubTree.setRightChild(buildSubTreeRecursively(rootOfSubTree, rightPath));
+
+
+            // Now that the tree is build correctly we need to add the outer subtrees
+            // We loop over each node in the pad in ascending order
+            // if a node doesn't have a child that is in listOfNodesOnPath it will get an outer subtree as a child
+            int subTreeIndex = 0;
+            for (Node<E> pathNode : listOfNodesOnPath) {
+                if (!listOfNodesOnPath.contains(pathNode.getLeftChild())) {
+                    pathNode.setLeftChild(listOfSubTreesOfPath.get(subTreeIndex));
+                    if (listOfSubTreesOfPath.get(subTreeIndex) != null) {
+                        listOfSubTreesOfPath.get(subTreeIndex).setParent(pathNode);
+                        listOfSubTreesOfPath.get(subTreeIndex).setWhichChild(1);
+                    }
+                    subTreeIndex++;
+                }
+                if (!listOfNodesOnPath.contains(pathNode.getRightChild())) {
+                    pathNode.setRightChild(listOfSubTreesOfPath.get(subTreeIndex));
+                    if (listOfSubTreesOfPath.get(subTreeIndex) != null) {
+                        listOfSubTreesOfPath.get(subTreeIndex).setParent(pathNode);
+                        listOfSubTreesOfPath.get(subTreeIndex).setWhichChild(2);
+                    }
+                    subTreeIndex++;
+                }
+            }
+            // Now that the subtrees got added to our splay we are done with the splay operation.
+        }
+    }
+
+    private Node<E> buildSubTreeRecursively(Node<E> subRoot, List<Node<E>> path) {
+        if (path.size() == 0) return null;
+        int middleNodeIndex = path.size() / 2;
+        Node<E> middleNode = path.get(middleNodeIndex);
+        middleNode.setParent(subRoot);
+        // Depending on if the middleNode is the right or left child of its parent, set the right parameter
+        if (middleNode.compareTo(subRoot) < 0) middleNode.setWhichChild(1);
+        if (middleNode.compareTo(subRoot) > 0) middleNode.setWhichChild(2);
+
+        // Now we recursively add the correct right and left child to the middleNode
+        List<Node<E>> leftPath = path.subList(0, middleNodeIndex);
+        List<Node<E>> rightPath = path.subList(middleNodeIndex+1, path.size());
+        middleNode.setLeftChild(buildSubTreeRecursively(middleNode, leftPath));
+        middleNode.setRightChild(buildSubTreeRecursively(middleNode, rightPath));
+        return middleNode;
     }
 }
