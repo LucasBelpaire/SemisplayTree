@@ -5,7 +5,9 @@ import org.junit.Test;
 import semisplay.Node;
 import semisplay.SemiSplayTree;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -16,7 +18,7 @@ public class SemiSplayTreeTest {
 
     @Before
     public final void setUp() {
-        bigTestAmount = 100000;
+        bigTestAmount = 100;
         splaySize = 3;
         int root = 0;
         semiSplayTree = new SemiSplayTree(root, splaySize);
@@ -225,20 +227,21 @@ public class SemiSplayTreeTest {
         semiSplayTree.add(node1);
         assertEquals(semiSplayTree.depth(), 1);
         semiSplayTree.add(node2);
-        assertEquals(semiSplayTree.depth(), 2);
+        assertEquals(semiSplayTree.depth(), 1);
         semiSplayTree.add(node3);
-        assertEquals(semiSplayTree.depth(), 3);
+        assertEquals(semiSplayTree.depth(), 2);
         semiSplayTree.add(node4);
-        assertEquals(semiSplayTree.depth(), 3);
+        assertEquals(semiSplayTree.depth(), 2);
     }
 
     @Test
     public void depthTestBig(){
-        assertEquals(semiSplayTree.depth(), 0);
+        SemiSplayTree<Integer> depthTree = new SemiSplayTree<>(0, bigTestAmount+1);
+        assertEquals(depthTree.depth(), 0);
         for (int i  = 0; i < bigTestAmount; i++) {
-            semiSplayTree.add(i);
+            depthTree.add(i);
         }
-        assertEquals(bigTestAmount-1, semiSplayTree.depth());
+        assertEquals(bigTestAmount-1, depthTree.depth());
     }
 
     @Test
@@ -335,123 +338,143 @@ public class SemiSplayTreeTest {
 
     @Test
     public void splay4aTest() {
-        SemiSplayTree<Integer> splay4Tree = new SemiSplayTree<>(4, 0);
+        SemiSplayTree<Integer> splay4Tree = new SemiSplayTree<>(0, 4);
         splay4Tree.add(-1);
         splay4Tree.add(-2);
         splay4Tree.add(-3);
         Node node = splay4Tree.getRoot();
-        assertEquals(-2, node.getKey());
-        assertEquals(-3, node.getLeftChild().getKey());
-        node = node.getRightChild();
-        assertNotNull(node);
         assertEquals(-1, node.getKey());
         assertEquals(0, node.getRightChild().getKey());
+        node = node.getLeftChild();
+        assertNotNull(node);
+        assertEquals(-2, node.getKey());
+        assertEquals(-3, node.getLeftChild().getKey());
     }
 
     @Test
     public void splay4bTest() {
-        SemiSplayTree<Integer> splay4Tree = new SemiSplayTree<>(4, 0);
+        SemiSplayTree<Integer> splay4Tree = new SemiSplayTree<>(0, 4);
         splay4Tree.add(-4);
         splay4Tree.add(-2);
         splay4Tree.add(-3);
         Node node = splay4Tree.getRoot();
-        assertEquals(-3, node.getKey());
-        assertEquals(-4, node.getLeftChild().getKey());
-        node = node.getRightChild();
-        assertNotNull(node);
         assertEquals(-2, node.getKey());
         assertEquals(0, node.getRightChild().getKey());
+        node = node.getLeftChild();
+        assertNotNull(node);
+        assertEquals(-3, node.getKey());
+        assertEquals(-4, node.getLeftChild().getKey());
     }
 
     @Test
     public void splay4cTest() {
-        SemiSplayTree<Integer> splay4Tree = new SemiSplayTree<>(4, 0);
+        SemiSplayTree<Integer> splay4Tree = new SemiSplayTree<>(0, 4);
         splay4Tree.add(10);
         splay4Tree.add(8);
         splay4Tree.add(4);
         Node node = splay4Tree.getRoot();
-        assertEquals(4, node.getKey());
-        assertEquals(0, node.getLeftChild().getKey());
-        node = node.getRightChild();
-        assertNotNull(node);
         assertEquals(8, node.getKey());
         assertEquals(10, node.getRightChild().getKey());
+        node = node.getLeftChild();
+        assertNotNull(node);
+        assertEquals(4, node.getKey());
+        assertEquals(0, node.getLeftChild().getKey());
     }
 
     @Test
     public void splay4dTest() {
-        SemiSplayTree<Integer> splay4Tree = new SemiSplayTree<>(4, 0);
+        SemiSplayTree<Integer> splay4Tree = new SemiSplayTree<>(0, 4);
         splay4Tree.add(6);
         splay4Tree.add(10);
         splay4Tree.add(8);
         Node node = splay4Tree.getRoot();
-        assertEquals(6, node.getKey());
-        assertEquals(0, node.getLeftChild().getKey());
-        node = node.getRightChild();
-        assertNotNull(node);
         assertEquals(8, node.getKey());
         assertEquals(10, node.getRightChild().getKey());
+        node = node.getLeftChild();
+        assertNotNull(node);
+        assertEquals(6, node.getKey());
+        assertEquals(0, node.getLeftChild().getKey());
     }
 
     @Test
     public void splay4eTest() {
-        SemiSplayTree<Integer> splay4Tree = new SemiSplayTree<>(4, 0);
+        SemiSplayTree<Integer> splay4Tree = new SemiSplayTree<>(0, 4);
         splay4Tree.add(-4);
         splay4Tree.add(-8);
         splay4Tree.add(-6);
         Node node = splay4Tree.getRoot();
-        assertEquals(-6, node.getKey());
-        assertEquals(-8, node.getLeftChild().getKey());
-        node = node.getRightChild();
-        assertNotNull(node);
         assertEquals(-4, node.getKey());
         assertEquals(0, node.getRightChild().getKey());
+        node = node.getLeftChild();
+        assertNotNull(node);
+        assertEquals(-6, node.getKey());
+        assertEquals(-8, node.getLeftChild().getKey());
     }
 
     @Test
     public void splay4fTest() {
-        SemiSplayTree<Integer> splay4Tree = new SemiSplayTree<>(4, 0);
+        SemiSplayTree<Integer> splay4Tree = new SemiSplayTree<>(0, 4);
         splay4Tree.add(-10);
         splay4Tree.add(-8);
         splay4Tree.add(-6);
         Node node = splay4Tree.getRoot();
-        assertEquals(-8, node.getKey());
-        assertEquals(-10, node.getLeftChild().getKey());
-        node = node.getRightChild();
-        assertNotNull(node);
         assertEquals(-6, node.getKey());
         assertEquals(0, node.getRightChild().getKey());
+        node = node.getLeftChild();
+        assertNotNull(node);
+        assertEquals(-8, node.getKey());
+        assertEquals(-10, node.getLeftChild().getKey());
     }
 
     @Test
     public void splay4gTest() {
-        SemiSplayTree<Integer> splay4Tree = new SemiSplayTree<>(4, 0);
+        SemiSplayTree<Integer> splay4Tree = new SemiSplayTree<>(0, 4);
         splay4Tree.add(10);
         splay4Tree.add(6);
         splay4Tree.add(8);
         Node node = splay4Tree.getRoot();
-        assertEquals(6, node.getKey());
-        assertEquals(0, node.getLeftChild().getKey());
-        node = node.getRightChild();
-        assertNotNull(node);
         assertEquals(8, node.getKey());
         assertEquals(10, node.getRightChild().getKey());
+        node = node.getLeftChild();
+        assertNotNull(node);
+        assertEquals(6, node.getKey());
+        assertEquals(0, node.getLeftChild().getKey());
     }
 
     @Test
     public void splay4hTest() {
-        SemiSplayTree<Integer> splay4Tree = new SemiSplayTree<>(4, 0);
+        SemiSplayTree<Integer> splay4Tree = new SemiSplayTree<>(0, 4);
         splay4Tree.add(10);
         splay4Tree.add(15);
         splay4Tree.add(20);
         Node node = splay4Tree.getRoot();
-        assertEquals(10, node.getKey());
-        assertEquals(0, node.getLeftChild().getKey());
-        node = node.getRightChild();
-        assertNotNull(node);
         assertEquals(15, node.getKey());
         assertEquals(20, node.getRightChild().getKey());
+        node = node.getLeftChild();
+        assertNotNull(node);
+        assertEquals(10, node.getKey());
+        assertEquals(0, node.getLeftChild().getKey());
     }
 
+    @Test
+    public void splay7Test() {
+        SemiSplayTree<Integer> splay7Tree = new SemiSplayTree<>(0, 7);
+        splay7Tree.add(1);
+        splay7Tree.add(2);
+        splay7Tree.add(3);
+        splay7Tree.add(4);
+        splay7Tree.add(5);
+        splay7Tree.add(6);
 
+        Node root = splay7Tree.getRoot();
+        assertEquals(3, root.getKey());
+        Node leftChild = root.getLeftChild();
+        Node rightChild = root.getRightChild();
+        assertEquals(1, leftChild.getKey());
+        assertEquals(0, leftChild.getLeftChild().getKey());
+        assertEquals(2, leftChild.getRightChild().getKey());
+        assertEquals(5, rightChild.getKey());
+        assertEquals(4, rightChild.getLeftChild().getKey());
+        assertEquals(6, rightChild.getRightChild().getKey());
+    }
 }
