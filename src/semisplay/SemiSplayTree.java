@@ -131,6 +131,7 @@ public class SemiSplayTree<E extends Comparable<E>> implements SearchTree<E> {
                         default: return false;
                     }
                     decrementSize();
+                    splay(currentNode.getParent());
                     return true;
                 }
 
@@ -159,6 +160,7 @@ public class SemiSplayTree<E extends Comparable<E>> implements SearchTree<E> {
                         default: return false;
                     }
                     decrementSize();
+                    splay(child);
                     return true;
                 }
                 // Case 3: multiple children
@@ -168,6 +170,9 @@ public class SemiSplayTree<E extends Comparable<E>> implements SearchTree<E> {
                     while(smallestNode.getLeftChild() != null) {
                         smallestNode = smallestNode.getLeftChild();
                     }
+                    Node<E> startOfSplay;
+                    if (smallestNode.getParent() != currentNode) startOfSplay = smallestNode.getParent();
+                    else startOfSplay = smallestNode;
                     // smallestNode is a leaf, so we can just remove its link with its parent without a problem
                     switch (smallestNode.getWhichChild()) {
                         case 1: smallestNode.getParent().setLeftChild(null);
@@ -207,6 +212,7 @@ public class SemiSplayTree<E extends Comparable<E>> implements SearchTree<E> {
                         default: return false;
                     }
                     decrementSize();
+                    splay(startOfSplay);
                     return true;
                 }
             }
