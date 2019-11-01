@@ -92,6 +92,7 @@ public class SemiSplayTree<E extends Comparable<E>> implements SearchTree<E> {
             E currentKeyValue = currentNode.getKey();
             // Key is found
             if (currentKeyValue.equals(key)) {
+                splay(currentNode);
                 return true;
             }
             // currentKeyValue is less than key
