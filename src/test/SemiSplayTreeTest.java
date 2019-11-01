@@ -5,9 +5,7 @@ import org.junit.Test;
 import semisplay.Node;
 import semisplay.SemiSplayTree;
 
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -18,7 +16,7 @@ public class SemiSplayTreeTest {
 
     @Before
     public final void setUp() {
-        bigTestAmount = 100;
+        bigTestAmount = 1000;
         splaySize = 3;
         int root = 0;
         semiSplayTree = new SemiSplayTree(root, splaySize);
@@ -331,6 +329,17 @@ public class SemiSplayTreeTest {
         assertEquals(6, node.getLeftChild().getKey());
         assertEquals(0, node.getLeftChild().getLeftChild().getKey());
         assertEquals(10, node.getRightChild().getKey());
+        semiSplayTree.add(-1);
+        semiSplayTree.add(7);
+        semiSplayTree.add(-5);
+        node = semiSplayTree.getRoot();
+        assertEquals(6, node.getKey());
+        assertEquals(-1, node.getLeftChild().getKey());
+        assertEquals(-5, node.getLeftChild().getLeftChild().getKey());
+        assertEquals(0, node.getLeftChild().getRightChild().getKey());
+        assertEquals(8, node.getRightChild().getKey());
+        assertEquals(10, node.getRightChild().getRightChild().getKey());
+        assertEquals(7, node.getRightChild().getLeftChild().getKey());
 
     }
 
