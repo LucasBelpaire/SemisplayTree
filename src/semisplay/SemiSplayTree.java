@@ -339,12 +339,13 @@ public class SemiSplayTree<E extends Comparable<E>> implements SearchTree<E> {
 
         // Now we go over the path and splay every n consecutive nodes
         // The function will keep looping until there are less than n nodes left in the path
-        while (path.size() >= this.splaySize ) {
-            List<Node<E>> listOfNodesOnPath = new ArrayList<>();
-            List<Node<E>> listOfSubTreesOfPath = new ArrayList<>(); // will be double as long as listOfNodesOnPath
+        List<Node<E>> listOfNodesOnPath = new ArrayList<>();
+        List<Node<E>> listOfSubTreesOfPath = new ArrayList<>(); // will be double as long as listOfNodesOnPath
+        while (path.size() + listOfNodesOnPath.size() >= this.splaySize ) {
 
             // Get n nodes, for the current splay operation
-            for (int i = 0; i < splaySize; i++) {
+            int listOfNodesOnPathSize = listOfNodesOnPath.size();
+            for (int i = 0; i < this.splaySize - listOfNodesOnPathSize; i++) {
                 listOfNodesOnPath.add(path.peek());
                 path.remove();
             }
@@ -409,6 +410,9 @@ public class SemiSplayTree<E extends Comparable<E>> implements SearchTree<E> {
                 }
             }
             // Now that the subtrees got added to our splay we are done with the splay operation.
+            listOfNodesOnPath.clear();
+            listOfSubTreesOfPath.clear();
+            listOfNodesOnPath.add(rootOfSubTree);
         }
     }
 
