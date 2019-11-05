@@ -267,10 +267,10 @@ public class SemiSplayTree<E extends Comparable<E>> implements SearchTree<E> {
             while(nodeCount > 0) {
                 Node<E> newNode = nodes.peek();
                 nodes.remove();
-                if (newNode.getLeftChild() != null) {
+                if (newNode != null && newNode.getLeftChild() != null) {
                     nodes.add(newNode.getLeftChild());
                 }
-                if (newNode.getRightChild() != null) {
+                if (newNode != null && newNode.getRightChild() != null) {
                     nodes.add(newNode.getRightChild());
                 }
                 nodeCount--;
@@ -378,7 +378,7 @@ public class SemiSplayTree<E extends Comparable<E>> implements SearchTree<E> {
             // sort the nodes in the right order, from smallest to largest
             Collections.sort(listOfNodesOnPath);
             // Get the subtrees in the right order
-            for (Node nodeOnPath : listOfNodesOnPath) {
+            for (Node<E> nodeOnPath : listOfNodesOnPath) {
                 if (!listOfNodesOnPath.contains(nodeOnPath.getLeftChild())) listOfSubTreesOfPath.add(nodeOnPath.getLeftChild());
                 if (!listOfNodesOnPath.contains(nodeOnPath.getRightChild())) listOfSubTreesOfPath.add(nodeOnPath.getRightChild());
             }
@@ -439,6 +439,12 @@ public class SemiSplayTree<E extends Comparable<E>> implements SearchTree<E> {
         }
     }
 
+    /**
+     * This function will attempt to recursively build a complete binary tree.
+     * @param subRoot, the root on which the binary (sub)tree will be attached
+     * @param path, the list containing all nodes which will become the binary tree
+     * @return the root of the new binary tree
+     */
     private Node<E> buildSubTreeRecursively(Node<E> subRoot, List<Node<E>> path) {
         if (path.size() == 0) return null;
         int middleNodeIndex = path.size() / 2;
