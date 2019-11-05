@@ -16,7 +16,7 @@ public class SemiSplayTreeTest {
 
     @Before
     public final void setUp() {
-        bigTestAmount = 1000;
+        bigTestAmount = 100000;
         splaySize = 3;
         int root = 0;
         semiSplayTree = new SemiSplayTree(root, splaySize);
@@ -140,11 +140,18 @@ public class SemiSplayTreeTest {
     public void removeMultipleChildren2() {
         assertTrue(semiSplayTree.add(-2));
         assertTrue(semiSplayTree.add(-3));
+        assertEquals(-2, (long) semiSplayTree.getRoot().getKey());
         assertTrue(semiSplayTree.add(-1));
+        assertEquals(-1, (long) semiSplayTree.getRoot().getKey());
+        assertEquals(0, (long) semiSplayTree.getRoot().getRightChild().getKey());
+        assertEquals(-2, (long) semiSplayTree.getRoot().getLeftChild().getKey());
+        assertEquals(-3, (long) semiSplayTree.getRoot().getLeftChild().getLeftChild().getKey());
+        assertTrue(semiSplayTree.contains(0));
         assertTrue(semiSplayTree.contains(-2));
         assertTrue(semiSplayTree.contains(-3));
         assertTrue(semiSplayTree.contains(-1));
         assertTrue(semiSplayTree.remove(-2));
+        assertEquals(-1, (long) semiSplayTree.getRoot().getKey());
         assertFalse(semiSplayTree.contains(-2));
         assertTrue(semiSplayTree.contains(-1));
         assertTrue(semiSplayTree.contains(-3));
@@ -175,17 +182,18 @@ public class SemiSplayTreeTest {
 
     @Test
     public void testRemoveBig() {
-        for (int i = 1; i < bigTestAmount; i++) {
+        int test =bigTestAmount;
+        for (int i = 1; i < test; i++) {
             semiSplayTree.add(i);
             assertTrue(semiSplayTree.contains(i));
             assertTrue(semiSplayTree.remove(i));
             assertFalse(semiSplayTree.contains(i));
             assertFalse(semiSplayTree.remove(i));
         }
-        for (int i = 1; i < bigTestAmount; i++) {
+        for (int i = 1; i < test; i++) {
             semiSplayTree.add(i);
         }
-        for (int i = 1; i < bigTestAmount; i++) {
+        for (int i = 1; i < test; i++) {
             assertTrue(semiSplayTree.remove(i));
             assertFalse(semiSplayTree.contains(i));
         }
@@ -261,7 +269,7 @@ public class SemiSplayTreeTest {
 
     @Test
     public void constructorWithoutRootTest() {
-        SemiSplayTree<Integer> semi = new SemiSplayTree(3);
+        SemiSplayTree<Integer> semi = new SemiSplayTree<>(3);
         assertFalse(semi.contains(4));
         assertTrue(semi.add(4));
         assertTrue(semi.contains(4));
