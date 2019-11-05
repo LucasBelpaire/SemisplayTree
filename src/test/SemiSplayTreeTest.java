@@ -182,18 +182,35 @@ public class SemiSplayTreeTest {
 
     @Test
     public void testRemoveBig() {
-        int test =bigTestAmount;
-        for (int i = 1; i < test; i++) {
+        for (int i = 1; i < bigTestAmount; i++) {
             semiSplayTree.add(i);
             assertTrue(semiSplayTree.contains(i));
             assertTrue(semiSplayTree.remove(i));
             assertFalse(semiSplayTree.contains(i));
             assertFalse(semiSplayTree.remove(i));
         }
-        for (int i = 1; i < test; i++) {
+        for (int i = 1; i < bigTestAmount; i++) {
             semiSplayTree.add(i);
         }
-        for (int i = 1; i < test; i++) {
+        for (int i = 1; i < bigTestAmount; i++) {
+            assertTrue(semiSplayTree.remove(i));
+            assertFalse(semiSplayTree.contains(i));
+        }
+    }
+
+    @Test
+    public void testRemoveBigReverse() {
+        for (int i = bigTestAmount; i > 0; i--) {
+            semiSplayTree.add(i);
+            assertTrue(semiSplayTree.contains(i));
+            assertTrue(semiSplayTree.remove(i));
+            assertFalse(semiSplayTree.contains(i));
+            assertFalse(semiSplayTree.remove(i));
+        }
+        for (int i = bigTestAmount; i > 0; i--) {
+            semiSplayTree.add(i);
+        }
+        for (int i = bigTestAmount; i > 0; i--) {
             assertTrue(semiSplayTree.remove(i));
             assertFalse(semiSplayTree.contains(i));
         }
