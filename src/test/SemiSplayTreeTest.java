@@ -11,15 +11,15 @@ import static org.junit.Assert.*;
 
 public class SemiSplayTreeTest {
 
-    private int bigTestAmount, splaySize;
+    private int bigTestAmount;
     private SemiSplayTree<Integer> semiSplayTree;
 
     @Before
     public final void setUp() {
         bigTestAmount = 100000;
-        splaySize = 3;
+        int splaySize = 3;
         int root = 0;
-        semiSplayTree = new SemiSplayTree(root, splaySize);
+        semiSplayTree = new SemiSplayTree<>(root, splaySize);
     }
 
     @Test
