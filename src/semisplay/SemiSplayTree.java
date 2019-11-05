@@ -126,13 +126,14 @@ public class SemiSplayTree<E extends Comparable<E>> implements SearchTree<E> {
                         case 0: this.root = null; // currentNode is the root
                             break;
                         case 1: currentNode.getParent().setLeftChild(null); // currentNode is the leftChild of its parent
+                            splay(currentNode.getParent());
                             break;
                         case 2: currentNode.getParent().setRightChild(null); // currentNode is the rightChild of its parent
+                            splay(currentNode.getParent());
                             break;
                         default: return false;
                     }
                     decrementSize();
-                    splay(currentNode.getParent());
                     return true;
                 }
 
@@ -174,32 +175,46 @@ public class SemiSplayTree<E extends Comparable<E>> implements SearchTree<E> {
                     Node<E> startOfSplay;
                     if (smallestNode.getParent() != currentNode) startOfSplay = smallestNode.getParent();
                     else startOfSplay = smallestNode;
-                    // smallestNode is a leaf, so we can just remove its link with its parent without a problem
+                    // the smallest node will not have a leftChild
+                    // but it should be checked if it has a right child, if so, make sure it gets connected
+                    Node<E> rightChildOfSmallestNode = smallestNode.getRightChild();
                     switch (smallestNode.getWhichChild()) {
-                        case 1: smallestNode.getParent().setLeftChild(null);
+                        case 1: smallestNode.getParent().setLeftChild(rightChildOfSmallestNode);
+                                if (rightChildOfSmallestNode != null) rightChildOfSmallestNode.setWhichChild(1);
                             break;
-                        case 2: smallestNode.getParent().setRightChild(null);
+                        case 2: smallestNode.getParent().setRightChild(rightChildOfSmallestNode);
+                                if (rightChildOfSmallestNode != null) rightChildOfSmallestNode.setWhichChild(2);
                             break;
                         default: return false;
                     }
+                    if (rightChildOfSmallestNode != null) rightChildOfSmallestNode.setParent(smallestNode.getParent());
                     // our currentNode can be the root, which is a special case
                     if (this.root == currentNode) {
                         smallestNode.setParent(null); // our root doesn't have a parent.
                         smallestNode.setWhichChild(0);
                         smallestNode.setLeftChild(this.root.getLeftChild());
+                        smallestNode.setRightChild(this.root.getRightChild());
                         this.root = smallestNode;
+
+                        if (smallestNode.getLeftChild() != null) smallestNode.getLeftChild().setParent(smallestNode);
+                        if (smallestNode.getRightChild() != null) smallestNode.getRightChild().setParent(smallestNode);
 
                         // it is possible that our new root was the only rightChild of the original root
                         // in this case: set rightChild equal to null
                         if (currentNode.getRightChild() == smallestNode) {
                             this.root.setRightChild(null);
+                            decrementSize();
+                            splay(startOfSplay);
                             return true;
                         }
                         // else the rightChild of the original root will become the rightChild of the new root.
                         this.root.setRightChild(currentNode.getRightChild());
+                        decrementSize();
+                        splay(startOfSplay);
                         return true;
                     }
                     smallestNode.setParent(currentNode.getParent());
+                    smallestNode.setWhichChild(currentNode.getWhichChild());
                     // now link the smallestNode with its new parent
                     switch (currentNode.getWhichChild()) {
                         case 1: currentNode.getParent().setLeftChild(smallestNode);
@@ -212,6 +227,8 @@ public class SemiSplayTree<E extends Comparable<E>> implements SearchTree<E> {
                             break;
                         default: return false;
                     }
+                    if (smallestNode.getLeftChild() != null) smallestNode.getLeftChild().setParent(smallestNode);
+                    if (smallestNode.getRightChild() != null) smallestNode.getRightChild().setParent(smallestNode);
                     decrementSize();
                     splay(startOfSplay);
                     return true;
@@ -247,7 +264,6 @@ public class SemiSplayTree<E extends Comparable<E>> implements SearchTree<E> {
         int nodeCount = nodes.size();
         while (nodeCount != 0) {
             depth++;
-
             while(nodeCount > 0) {
                 Node<E> newNode = nodes.peek();
                 nodes.remove();
