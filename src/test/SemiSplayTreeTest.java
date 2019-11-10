@@ -5,7 +5,9 @@ import org.junit.Test;
 import semisplay.Node;
 import semisplay.SemiSplayTree;
 
-import java.util.Iterator;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
 
 import static org.junit.Assert.*;
 
