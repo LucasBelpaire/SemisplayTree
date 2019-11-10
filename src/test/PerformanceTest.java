@@ -24,50 +24,50 @@ public class PerformanceTest {
         for (int i = 0; i < 4; i++) testNumbers[i] = Integer.parseInt(testNumbersString[i]);
 
         Timer timer = new Timer();
-        int amountOfTests = 5;
+        int amountOfTests = 30;
         // splaySize=3
         // print out the average time
         double totalTime = 0;
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < amountOfTests; i++) {
             timer.start();
             performanceTest(randomNumbers, testNumbers, 3);
             timer.end();
-            totalTime = timer.delta();
+            totalTime += timer.delta();
         }
         System.out.println("SplaySize = 3, ideal scenario, average time: "+totalTime/amountOfTests);
 
         // splaySize=7
         totalTime = 0;
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < amountOfTests; i++) {
             timer.start();
             performanceTest(randomNumbers, testNumbers, 7);
             timer.end();
-            totalTime = timer.delta();
+            totalTime += timer.delta();
         }
         System.out.println("SplaySize = 7, ideal scenario, average time: "+totalTime/amountOfTests);
 
         // splaySize=15
         totalTime = 0;
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < amountOfTests; i++) {
             timer.start();
             performanceTest(randomNumbers, testNumbers, 15);
             timer.end();
-            totalTime = timer.delta();
+            totalTime += timer.delta();
         }
         System.out.println("SplaySize = 15, ideal scenario, average time: "+totalTime/amountOfTests);
 
         // splaySize=3, non optimal scenario
         totalTime = 0;
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < amountOfTests; i++) {
             timer.start();
             performanceTestBad(randomNumbers, 3);
             timer.end();
-            totalTime = timer.delta();
+            totalTime += timer.delta();
         }
         System.out.println("SplaySize = 3, non optimal scenario, average time: "+totalTime/amountOfTests);
     }
 
-    private void performanceTest(List<Integer> randomNumbers, int[] testNumbers, int splaySize) throws IOException {
+    private void performanceTest(List<Integer> randomNumbers, int[] testNumbers, int splaySize) {
         SemiSplayTree<Integer> performanceTree = new SemiSplayTree<>(splaySize);
         for (int number : randomNumbers) performanceTree.add(number);
         for (int i = 0; i < 10000000; i++) {
