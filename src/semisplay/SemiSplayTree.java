@@ -249,15 +249,11 @@ public class SemiSplayTree<E extends Comparable<E>> implements SearchTree<E> {
 
     /**
      * Returns the depth of the SemiSplay, meaning the longest path down.
-     * Based on: https://www.geeksforgeeks.org/iterative-method-to-find-height-of-binary-tree/
      * @return the depth of the SemiSplay, int. Will return -1 if the tree is empty, and 0 if there is only root.
      */
     @Override
     public int depth() {
-        // return depthRecursively(this.root, -1);
-
         if (this.root == null) return -1;
-
         Queue<Node<E>> nodes = new LinkedList<>();
         nodes.add(this.root);
         int depth = -1;
